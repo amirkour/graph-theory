@@ -135,4 +135,48 @@ describe Graph do
 		end
 	end
 	# add_node
+
+	describe "#add_edge" do
+		before :all do
+			@origin=Node.new :payload=>'origin'
+			@terminus=Node.new :payload=>'terminus'
+		end
+		after :each do
+
+		end
+		it "adds an edge between the given nodes to the graph" do
+			graph=Graph.new		
+			expect(graph.edges.length).to eq(0)
+
+			graph.add_edge(@origin, @terminus)
+			expect(graph.edges.length).to eq(1)
+
+			edge_from_graph=graph.edges[0] if graph.edges.length >= 0
+			edge_that_should_be_equals=Edge.new :origin=>@origin, :terminus=>@terminus
+			expect(edge_that_should_be_equals).to eq(edge_from_graph)
+		end
+		it "adds the nodes of the new edge to the graph" do
+			graph=Graph.new
+			expect(graph.nodes.length).to eq(0)
+			graph.add_edge(@origin,@terminus)
+			expect(graph.nodes.length).to eq(2)
+			expect(graph.nodes.include? @origin).to be_true
+			expect(graph.nodes.include? @terminus).to be_true
+		end
+		it "won't add the same edge twice" do
+			graph=Graph.new
+			graph.add_edge(@origin,@terminus)
+			graph.add_edge(@origin,@terminus)
+			graph.add_edge(@origin,@terminus)
+			expect(graph.edges.length).to eq(1)
+		end
+		it "won't add an edge if either of the args is not a Node" do
+			graph=Graph.new
+			graph.add_edge(@origin,nil)
+			graph.add_edge(nil,@origin)
+			graph.add_edge(Edge.new, nil)
+			expect(graph.edges.length).to eq(0)
+		end
+	end
+	# add_edge
 end
