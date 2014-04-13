@@ -179,4 +179,53 @@ describe Graph do
 		end
 	end
 	# add_edge
+
+	describe "#delete_node" do
+		before :all do
+			@node=Node.new :payload=>'delete_node test node'
+		end
+		it "removes the given node from the list of nodes" do
+			graph=Graph.new :nodes=>[@node, Node.new]
+			expect(graph.nodes.length).to eq(2)
+
+			graph.delete_node @node
+			expect(graph.nodes.length).to eq(1)
+		end
+		it "removes/returns all edges starting at the given node" do
+			graph=Graph.new
+			graph.add_edge(@node, Node.new(:payload=>1))
+			graph.add_edge(@node, Node.new(:payload=>2))
+			graph.add_edge(Node.new(:payload=>1), Node.new(:payload=>2))
+
+			edges_removed=graph.delete_node(@node)
+			expect(edges_removed).to_not be_nil
+			expect(edges_removed).to be_a_kind_of(Array)
+			expect(edges_removed.length).to eq(2)
+			expect(graph.edges.length).to eq(1)
+			expect(graph.nodes.length).to eq(2)
+			expect(graph.edges.length).to eq(1)
+		end
+		it "removes/returns all edges ending at the given node" do
+			graph=Graph.new
+			graph.add_edge(Node.new(:payload=>1), @node)
+			graph.add_edge(Node.new(:payload=>2), @node)
+			graph.add_edge(Node.new(:payload=>1), Node.new(:payload=>2))
+
+			edges_removed=graph.delete_node(@node)
+			expect(edges_removed).to_not be_nil
+			expect(edges_removed).to be_a_kind_of(Array)
+			expect(edges_removed.length).to eq(2)
+			expect(graph.edges.length).to eq(1)
+			expect(graph.nodes.length).to eq(2)
+			expect(graph.edges.length).to eq(1)
+		end
+		it "returns an empty list, even if the given node is not kind_of?(Node)" do
+			graph=Graph.new
+			expect(graph.delete_node(nil)).to_not be_nil
+			expect(graph.delete_node(Edge.new)).to_not be_nil
+			expect(graph.delete_node(Edge.new)).to be_a_kind_of(Array)
+			expect(graph.delete_node(Object.new).length).to eq(0)
+		end
+	end
+	# delete_node
 end

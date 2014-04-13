@@ -1,6 +1,10 @@
 
 module GraphTheory
 	class Graph
+
+		# Accessors are primarly for testing.
+		# Adding/removing elements directly from the graph's list of nodes and/or edges
+		# will almost always break the graph - usee add_node, delete_node, add_edge, delete_edge
 		attr_accessor :nodes, :edges
 		def initialize(options={})
 			@nodes=options[:nodes] || []
@@ -14,6 +18,20 @@ module GraphTheory
 			
 			@nodes << node_to_add unless @nodes.include? node_to_add
 			node_to_add
+		end
+
+		def delete_node(node_to_delete)
+			return [] unless node_to_delete.kind_of?(Node)
+			return [] if @nodes.nil?
+
+			deleted_node=@nodes.delete(node_to_delete)
+			return [] if deleted_node.nil? # if no node was deleted, assume there are no edges w/ the callers node
+			return [] if @edges.nil? || @edges.length <= 0
+
+			edges_removed=@edges.select{|edge| edge.origin==node_to_delete || edge.terminus==node_to_delete }
+			@edges.delete_if{|edge| edge.origin==node_to_delete || edge.terminus==node_to_delete }
+
+			edges_removed || []
 		end
 
 		def add_edge(origin_node, terminus_node)
