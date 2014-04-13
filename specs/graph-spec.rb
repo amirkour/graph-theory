@@ -228,4 +228,45 @@ describe Graph do
 		end
 	end
 	# delete_node
+
+	describe "#delete_edge" do
+		before :all do
+			@origin=Node.new :payload=>'origin'
+			@terminus=Node.new :payload=>'terminus'
+			@dummy=Node.new :payload=>'dummy node'
+		end
+		it "removes/returns the edge between the given nodes" do
+			graph=Graph.new
+			graph.add_edge(@origin,@terminus)
+			graph.add_edge(@origin,@dummy)
+			removed_edge=graph.delete_edge(@origin,@terminus)
+
+			expect(graph.edges.length).to eq(1)
+			expect(removed_edge).to eq(Edge.new(:origin=>@origin, :terminus=>@terminus))
+		end
+		it "does not remove the nodes of the removed edge" do
+			graph=Graph.new
+			graph.add_edge(@origin,@terminus)
+			graph.add_edge(@origin,@dummy)
+			removed_edge=graph.delete_edge(@origin,@terminus)
+
+			expect(graph.nodes.length).to eq(3)
+		end
+		it "returns nil if there is no edge between the given nodes" do
+			graph=Graph.new
+			graph.add_edge(@origin,@terminus)
+			graph.add_edge(@origin,@dummy)
+			removed_edge=graph.delete_edge(@terminus,@origin)
+			expect(removed_edge).to be_nil
+		end
+		it "returns nil if either of the given params is not a Node object" do
+			graph=Graph.new
+			graph.add_edge(@origin,@terminus)
+			graph.add_edge(@origin,@dummy)
+			
+			expect(graph.delete_edge(nil,@terminus)).to be_nil
+			expect(graph.delete_edge(@origin,nil)).to be_nil
+		end
+	end
+	# delete_edge
 end

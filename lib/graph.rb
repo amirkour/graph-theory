@@ -48,6 +48,13 @@ module GraphTheory
 			new_edge
 		end
 
+		def delete_edge(origin_node, terminus_node)
+			return nil unless origin_node.kind_of?(Node) && terminus_node.kind_of?(Node)
+			return nil if @edges.nil? || @edges.length <= 0
+
+			@edges.delete(Edge.new(:origin=>origin_node, :terminus=>terminus_node))
+		end
+
 		def get_neighbors_for(origin_node, &block)
 			return [] if @edges.nil? || @edges.length <= 0 || origin_node.nil?
 
