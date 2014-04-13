@@ -105,4 +105,34 @@ describe Graph do
 
 	end
 	# get_neighbors_for
+
+	describe "#add_node" do
+		it "adds the given node to the list of nodes" do
+			graph=Graph.new :nodes=>[]
+			expect(graph.nodes.length).to eq(0)
+
+			graph.add_node Node.new
+			expect(graph.nodes.length).to eq(1)
+		end
+		it "won't add the same node more than once" do
+			a=Node.new :payload=>'foo'
+			graph=Graph.new
+			graph.add_node(a)
+
+			expect(graph.nodes.length).to eq(1)
+
+			graph.add_node(a)
+			expect(graph.nodes.length).to eq(1)
+		end
+		it "won't add non-node objects to the list of nodes" do
+			graph=Graph.new :nodes=>[]
+			expect(graph.nodes.length).to eq(0)
+
+			graph.add_node(Object.new)
+			graph.add_node(nil)
+			graph.add_node(Edge.new)
+			expect(graph.nodes.length).to eq(0)
+		end
+	end
+	# add_node
 end

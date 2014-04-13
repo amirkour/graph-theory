@@ -7,6 +7,15 @@ module GraphTheory
 			@edges=options[:edges] || []
 		end
 
+		def add_node(node_to_add)
+			return nil if node_to_add.nil?
+			return nil unless node_to_add.kind_of?(Node)
+			@nodes=[] if @nodes.nil?
+			
+			@nodes << node_to_add unless @nodes.include? node_to_add
+			node_to_add
+		end
+
 		def get_neighbors_for(origin_node, &block)
 			return [] if @edges.nil? || @edges.length <= 0 || origin_node.nil?
 
